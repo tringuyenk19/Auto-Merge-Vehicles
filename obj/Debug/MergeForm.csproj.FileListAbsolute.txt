@@ -1,0 +1,14 @@
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\MergeForm.exe.config
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\MergeForm.exe
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\MergeForm.pdb
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\Bunifu_UI_v1.5.3.dll
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\Guna.UI2.dll
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\bin\Debug\Bunifu_UI_v1.5.3.xml
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.csprojAssemblyReference.cache
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.Form1.resources
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.Properties.Resources.resources
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.csproj.GenerateResource.cache
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.csproj.CoreCompileInputs.cache
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.csproj.CopyComplete
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.exe
+C:\Users\lorraxs\source\repos\MergeForm\MergeForm\obj\Debug\MergeForm.pdb
