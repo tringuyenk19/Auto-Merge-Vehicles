@@ -43,8 +43,9 @@ namespace MergeForm
             //throw new NotImplementedException();
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged");
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged/stream");
-            string[] meta = { "/merged/vehicles.meta", "/merged/carcols.meta", "/merged/carvariations.meta", "/merged/handling.meta", "/merged/vehiclelayouts.meta", "/merged/__resource.lua" };
-            string __resource = @"resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5'
+            string[] meta = { "/merged/vehicles.meta", "/merged/carcols.meta", "/merged/carvariations.meta", "/merged/handling.meta", "/merged/vehiclelayouts.meta", "/merged/fxmanifest.lua" };
+            string __resource = @"fx_version 'adamant'
+game 'gta5'
  
 files {
     'vehicles.meta',
@@ -112,7 +113,7 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     writer.Flush();
                     writer.Close();
                 }
-                else if (metaName.Contains("__resource"))
+                else if (metaName.Contains("fxmanifest"))
                 {
                     using (StreamWriter sw = File.CreateText(metaPath))
                     {
@@ -125,75 +126,86 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
             string[] subdirectoryEntries = Directory.GetDirectories(root);
             int i = 0;
             float length = subdirectoryEntries.Length;
-            foreach (string subdirectory in subdirectoryEntries)
+            try
             {
-                if (!subdirectory.Contains("merged"))
+                foreach (string subdirectory in subdirectoryEntries)
                 {
-                    i = i + 1;
-                    Console.WriteLine((i / length).ToString());
-                    backgroundWorker1.ReportProgress((int)((i / length) * 100));
-                    Console.WriteLine(subdirectory);
-                    //LoadSubDir(subdirectory);
-                    bunifuCustomLabel5.Text = "Loading " + subdirectory;
-                    Console.WriteLine("Loading " + subdirectory);
-                    bunifuCustomLabel5.Refresh();
-                    DirectoryInfo d = new DirectoryInfo(subdirectory);
-                    FileInfo[] Files = d.GetFiles("*.meta");
-                    foreach (FileInfo file in Files)
+                    if (!subdirectory.Contains("merged"))
                     {
-                        if (file.Name == "vehicles.meta")
+                        i = i + 1;
+                        Console.WriteLine((i / length).ToString());
+                        backgroundWorker1.ReportProgress((int)((i / length) * 100));
+                        Console.WriteLine(subdirectory);
+                        //LoadSubDir(subdirectory);
+                        if (bunifuCustomLabel5.InvokeRequired)
                         {
-                            XmlDocument vehicles = new XmlDocument();
-                            vehicles.Load(file.FullName);
-                            vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
+                            bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "Loading " + subdirectory));
                         }
-                        if (file.Name == "carcols.meta")
+                        //bunifuCustomLabel5.Text = "Loading " + subdirectory;
+                        //Console.WriteLine("Loading " + subdirectory);
+                        //bunifuCustomLabel5.Refresh();
+                        DirectoryInfo d = new DirectoryInfo(subdirectory);
+                        FileInfo[] Files = d.GetFiles("*.meta");
+                        foreach (FileInfo file in Files)
                         {
-                            XmlDocument carcols = new XmlDocument();
-                            carcols.Load(file.FullName);
-                            CarcolsMeta.Merge(carcols, bunifuCustomLabel1.Text + "/merged/carcols.meta");
-                        }
-                        if (file.Name == "handling.meta")
-                        {
-                            XmlDocument handling = new XmlDocument();
-                            handling.Load(file.FullName);
-                            HandlingMeta.Merge(handling, bunifuCustomLabel1.Text + "/merged/handling.meta");
-                        }
-                        if (file.Name == "carvariations.meta")
-                        {
-                            XmlDocument carvariations = new XmlDocument();
-                            carvariations.Load(file.FullName);
-                            CarvariationsMeta.Merge(carvariations, bunifuCustomLabel1.Text + "/merged/carvariations.meta");
-                        }
-                        if (file.Name == "vehiclelayouts.meta")
-                        {
-                            XmlDocument vehiclelayouts = new XmlDocument();
-                            vehiclelayouts.Load(file.FullName);
-                            VehiclelayoutsMeta.Merge(vehiclelayouts, bunifuCustomLabel1.Text + "/merged/vehiclelayouts.meta");
-                        }
-                    }
-                    if (Directory.Exists(subdirectory + "/stream"))
-                    {
-                        DirectoryInfo stream = new DirectoryInfo(subdirectory + "/stream");
-                        FileInfo[] StreamFile = stream.GetFiles();
-                        foreach (FileInfo file in StreamFile)
-                        {
-                            if (!File.Exists(bunifuCustomLabel1.Text + "/merged/stream/" + file.Name))
+                            if (file.Name == "vehicles.meta")
                             {
-                                File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/stream", Path.GetFileName(file.FullName)));
+                                XmlDocument vehicles = new XmlDocument();
+                                vehicles.Load(file.FullName);
+                                vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
+                            }
+                            if (file.Name == "carcols.meta")
+                            {
+                                XmlDocument carcols = new XmlDocument();
+                                carcols.Load(file.FullName);
+                                CarcolsMeta.Merge(carcols, bunifuCustomLabel1.Text + "/merged/carcols.meta");
+                            }
+                            if (file.Name == "handling.meta")
+                            {
+                                XmlDocument handling = new XmlDocument();
+                                handling.Load(file.FullName);
+                                HandlingMeta.Merge(handling, bunifuCustomLabel1.Text + "/merged/handling.meta");
+                            }
+                            if (file.Name == "carvariations.meta")
+                            {
+                                XmlDocument carvariations = new XmlDocument();
+                                carvariations.Load(file.FullName);
+                                CarvariationsMeta.Merge(carvariations, bunifuCustomLabel1.Text + "/merged/carvariations.meta");
+                            }
+                            if (file.Name == "vehiclelayouts.meta")
+                            {
+                                XmlDocument vehiclelayouts = new XmlDocument();
+                                vehiclelayouts.Load(file.FullName);
+                                VehiclelayoutsMeta.Merge(vehiclelayouts, bunifuCustomLabel1.Text + "/merged/vehiclelayouts.meta");
                             }
                         }
+                        if (Directory.Exists(subdirectory + "/stream"))
+                        {
+                            DirectoryInfo stream = new DirectoryInfo(subdirectory + "/stream");
+                            FileInfo[] StreamFile = stream.GetFiles();
+                            foreach (FileInfo file in StreamFile)
+                            {
+                                if (!File.Exists(bunifuCustomLabel1.Text + "/merged/stream/" + file.Name))
+                                {
+                                    File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/stream", Path.GetFileName(file.FullName)));
+                                }
+                            }
+                        }
+                        Console.WriteLine("222222222");
                     }
-                    //Console.WriteLine("222222222");
+                    Thread.Sleep(500);
                 }
-                Thread.Sleep(500);
+                using (StreamWriter sw = File.CreateText(bunifuCustomLabel1.Text + "/merged/Merged-Vehicle.txt"))
+                {
+                    sw.WriteLine(vehicleName);
+                }
+                backgroundWorker1.ReportProgress(100);
+                //Console.WriteLine("end");
             }
-            using (StreamWriter sw = File.CreateText(bunifuCustomLabel1.Text + "/merged/Merged-Vehicle.txt"))
+            catch (Exception ex)
             {
-                sw.WriteLine(vehicleName);
+                Console.WriteLine(ex.Message);
             }
-            backgroundWorker1.ReportProgress(100);
-            //Console.WriteLine("end");
         }
 
         private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -239,59 +251,6 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     backgroundWorker1.RunWorkerAsync();
                 }
             }
-        }
-        private void LoadSubDir(string dir)
-        {
-            bunifuCustomLabel5.Text = "Loading " + dir;
-            Console.WriteLine("Loading " + dir);
-            bunifuCustomLabel5.Refresh();
-            DirectoryInfo d = new DirectoryInfo(dir);
-            FileInfo[] Files = d.GetFiles("*.meta");
-            foreach (FileInfo file in Files)
-            {
-                if (file.Name == "vehicles.meta")
-                {
-                    XmlDocument vehicles = new XmlDocument();
-                    vehicles.Load(file.FullName);
-                    vehicleName = vehicleName+"|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
-                }
-                if (file.Name == "carcols.meta")
-                {
-                    XmlDocument carcols = new XmlDocument();
-                    carcols.Load(file.FullName);
-                    CarcolsMeta.Merge(carcols, bunifuCustomLabel1.Text + "/merged/carcols.meta");
-                }
-                if (file.Name == "handling.meta")
-                {
-                    XmlDocument handling = new XmlDocument();
-                    handling.Load(file.FullName);
-                    HandlingMeta.Merge(handling, bunifuCustomLabel1.Text + "/merged/handling.meta");
-                }
-                if (file.Name == "carvariations.meta")
-                {
-                    XmlDocument carvariations = new XmlDocument();
-                    carvariations.Load(file.FullName);
-                    CarvariationsMeta.Merge(carvariations, bunifuCustomLabel1.Text + "/merged/carvariations.meta");
-                }
-                if (file.Name == "vehiclelayouts.meta")
-                {
-                    XmlDocument vehiclelayouts = new XmlDocument();
-                    vehiclelayouts.Load(file.FullName);
-                    VehiclelayoutsMeta.Merge(vehiclelayouts, bunifuCustomLabel1.Text + "/merged/vehiclelayouts.meta");
-                }
-            }
-            if (Directory.Exists(dir + "/stream"))
-            {
-                DirectoryInfo stream = new DirectoryInfo(dir + "/stream");
-                FileInfo[] StreamFile = stream.GetFiles();
-                foreach (FileInfo file in StreamFile)
-                {
-                    if (!File.Exists(bunifuCustomLabel1.Text + "/merged/stream/" + file.Name))
-                    {
-                        File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/stream", Path.GetFileName(file.FullName)));
-                    }
-                }
-            }   
         }
 
         public void Notification(string mes)
