@@ -33,7 +33,7 @@ namespace MergeForm
             XmlNode newVehicles = vehicles.SelectSingleNode("/CVehicleModelInfo__InitDataList/InitDatas");
             if (newVehicles == null)
             {
-                MessageBox.Show("ERROR");
+                MessageBox.Show("ERROR InitDatas");
                 return "InitDatas ERROR" + metaPath;
             }
             XmlNode RootVehicles = Root.SelectSingleNode("/CVehicleModelInfo__InitDataList/InitDatas");

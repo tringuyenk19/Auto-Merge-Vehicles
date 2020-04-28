@@ -43,7 +43,7 @@ namespace MergeForm
                 foreach (XmlNode item in newLights.ChildNodes)
                 {
                     XmlNode tempLights = Root.ImportNode(item, true);
-                    RootKits2.AppendChild(tempLights);
+                    RootLights2.AppendChild(tempLights);
                 }
             }
             Root.Save(rootPath);

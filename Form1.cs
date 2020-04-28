@@ -14,11 +14,11 @@ using System.Xml;
 
 namespace MergeForm
 {
-    public partial class Form1 : Form
+    public partial class Merge : Form
     {
         BackgroundWorker backgroundWorker1;
         string vehicleName = "";
-        public Form1()
+        public Merge()
         {
             InitializeComponent();
             backgroundWorker1 = new BackgroundWorker();
@@ -32,10 +32,16 @@ namespace MergeForm
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //throw new NotImplementedException();
-
-            MessageBox.Show("Done");
-            Process.Start(bunifuCustomLabel1.Text + "/merged");
-            Environment.Exit(69);
+            if (guna2CircleProgressBar1.Value == 100)
+            {
+                MessageBox.Show("Done");
+                Process.Start(bunifuCustomLabel1.Text + "/merged");
+                Environment.Exit(69);
+            }
+            else
+            {
+                bunifuCustomLabel5.ForeColor = Color.Red;
+            }
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -148,13 +154,13 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                         FileInfo[] Files = d.GetFiles("*.meta");
                         foreach (FileInfo file in Files)
                         {
-                            if (file.Name == "vehicles.meta")
+                            if (file.Name == "vehicles.meta" )
                             {
                                 XmlDocument vehicles = new XmlDocument();
                                 vehicles.Load(file.FullName);
                                 vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
                             }
-                            if (file.Name == "carcols.meta")
+                            if (file.Name == "carcols.meta" )
                             {
                                 XmlDocument carcols = new XmlDocument();
                                 carcols.Load(file.FullName);
@@ -204,7 +210,12 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show(ex.Message);
+                
+                if (bunifuCustomLabel5.InvokeRequired)
+                {
+                    bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "ERROR " + bunifuCustomLabel5.Text +" | Check your meta"));
+                }
             }
         }
 
