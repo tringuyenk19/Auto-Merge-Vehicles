@@ -119,7 +119,7 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     writer.Flush();
                     writer.Close();
                 }
-                else if (metaName.Contains("fxmanifest"))
+                else if (metaName.Contains("fxmanifest") || metaName.Contains("__resource"))
                 {
                     using (StreamWriter sw = File.CreateText(metaPath))
                     {
