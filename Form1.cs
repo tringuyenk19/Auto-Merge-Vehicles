@@ -48,6 +48,7 @@ namespace MergeForm
         {
             //throw new NotImplementedException();
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged");
+            Directory.CreateDirectory(bunifuCustomLabel1.Text + "/Error");
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged/stream");
             string[] meta = { "/merged/vehicles.meta", "/merged/carcols.meta", "/merged/carvariations.meta", "/merged/handling.meta", "/merged/vehiclelayouts.meta", "/merged/fxmanifest.lua" };
             string __resource = @"fx_version 'adamant'
@@ -77,7 +78,6 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                 {
                     XmlWriter writer = XmlWriter.Create(metaPath);
                     writer.WriteStartDocument();
-                    //Console.WriteLine("asdasdasdasdasdasd");
                     writer.WriteStartElement("CVehicleModelInfo__InitDataList");
                     writer.WriteEndElement();
                     writer.Flush();
@@ -132,35 +132,31 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
             string[] subdirectoryEntries = Directory.GetDirectories(root);
             int i = 0;
             float length = subdirectoryEntries.Length;
-            try
-            {
+            //try
+            //{
                 foreach (string subdirectory in subdirectoryEntries)
                 {
                     if (!subdirectory.Contains("merged"))
                     {
                         i = i + 1;
-                        Console.WriteLine((i / length).ToString());
                         backgroundWorker1.ReportProgress((int)((i / length) * 100));
-                        Console.WriteLine(subdirectory);
-                        //LoadSubDir(subdirectory);
                         if (bunifuCustomLabel5.InvokeRequired)
                         {
                             bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "Loading " + subdirectory));
                         }
-                        //bunifuCustomLabel5.Text = "Loading " + subdirectory;
-                        //Console.WriteLine("Loading " + subdirectory);
-                        //bunifuCustomLabel5.Refresh();
                         DirectoryInfo d = new DirectoryInfo(subdirectory);
                         FileInfo[] Files = d.GetFiles("*.meta");
+                    try
+                    {
                         foreach (FileInfo file in Files)
                         {
-                            if (file.Name == "vehicles.meta" )
+                            if (file.Name == "vehicles.meta")
                             {
                                 XmlDocument vehicles = new XmlDocument();
                                 vehicles.Load(file.FullName);
                                 vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
                             }
-                            if (file.Name == "carcols.meta" )
+                            if (file.Name == "carcols.meta")
                             {
                                 XmlDocument carcols = new XmlDocument();
                                 carcols.Load(file.FullName);
@@ -197,7 +193,21 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                                 }
                             }
                         }
-                        Console.WriteLine("222222222");
+                    }
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            string errFolderName = Path.GetFileName(subdirectory);
+                            Console.WriteLine("asdasd"+errFolderName);
+                            Directory.Move(subdirectory, bunifuCustomLabel1.Text + "/Error/" + errFolderName);
+                        }
+                        catch (Exception exd)
+                        {
+                            MessageBox.Show(exd.Message);
+                        }
+                        MessageBox.Show(ex.Message + "\n" + "Moved " + subdirectory + " to " + bunifuCustomLabel1.Text + "/Error", "ERROR in "+ subdirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     }
                     Thread.Sleep(500);
                 }
@@ -206,17 +216,16 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     sw.WriteLine(vehicleName);
                 }
                 backgroundWorker1.ReportProgress(100);
-                //Console.WriteLine("end");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+            //}
+            //catch (Exception ex)
+            //{
+               // MessageBox.Show(ex.Message);
                 
-                if (bunifuCustomLabel5.InvokeRequired)
-                {
-                    bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "ERROR " + bunifuCustomLabel5.Text +" | Check your meta"));
-                }
-            }
+                //if (bunifuCustomLabel5.InvokeRequired)
+                //{
+                //    bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "ERROR " + bunifuCustomLabel5.Text +" | Check your meta"));
+                //}
+            //}
         }
 
         private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -224,7 +233,6 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
             //throw new NotImplementedException();
             if (!backgroundWorker1.CancellationPending)
             {
-                Console.WriteLine(e.ProgressPercentage.ToString());
                 guna2CircleProgressBar1.Value = e.ProgressPercentage;
             }
         }

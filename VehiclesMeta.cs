@@ -45,7 +45,6 @@ namespace MergeForm
             XmlNode RootVehicles2 = Root.SelectSingleNode("/CVehicleModelInfo__InitDataList/InitDatas");
             foreach (XmlNode item in newVehicles.ChildNodes)
             {
-                Console.WriteLine("Merging vehicles " + newVehicles.FirstChild.FirstChild.InnerText);
                 vehicleName = vehicleName + " " + newVehicles.FirstChild.FirstChild.InnerText;
                 //XmlNode Item = Root.CreateElement("Item");
                 XmlNode ImportItem = Root.ImportNode(item, true);
