@@ -48,24 +48,22 @@ namespace MergeForm
         {
             //throw new NotImplementedException();
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged");
+            Directory.CreateDirectory(bunifuCustomLabel1.Text + "/Error");
             Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged/stream");
-            string[] meta = { "/merged/vehicles.meta", "/merged/carcols.meta", "/merged/carvariations.meta", "/merged/handling.meta", "/merged/vehiclelayouts.meta", "/merged/fxmanifest.lua" };
+            Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged/data");
+            string[] meta = {"/merged/fxmanifest.lua" };
             string __resource = @"fx_version 'adamant'
 game 'gta5'
  
 files {
-    'vehicles.meta',
-    'carvariations.meta',
-    'carcols.meta',
-    'handling.meta',
-    'vehiclelayouts.meta',
+    'data/**/*.meta'
 }
 
-data_file 'HANDLING_FILE' 'handling.meta'
-data_file 'VEHICLE_METADATA_FILE' 'vehicles.meta'
-data_file 'CARCOLS_FILE' 'carcols.meta'
-data_file 'VEHICLE_VARIATION_FILE' 'carvariations.meta'
-data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
+data_file 'HANDLING_FILE' 'data/**/handling.meta'
+data_file 'VEHICLE_METADATA_FILE' 'data/**/vehicles.meta'
+data_file 'CARCOLS_FILE' 'data/**/carcols.meta'
+data_file 'VEHICLE_VARIATION_FILE' 'data/**/carvariations.meta'
+data_file 'VEHICLE_LAYOUTS_FILE' 'data/**/vehiclelayouts.meta'";
             foreach (string metaName in meta)
             {
                 string metaPath = bunifuCustomLabel1.Text + metaName;
@@ -77,7 +75,6 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                 {
                     XmlWriter writer = XmlWriter.Create(metaPath);
                     writer.WriteStartDocument();
-                    //Console.WriteLine("asdasdasdasdasdasd");
                     writer.WriteStartElement("CVehicleModelInfo__InitDataList");
                     writer.WriteEndElement();
                     writer.Flush();
@@ -119,7 +116,7 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     writer.Flush();
                     writer.Close();
                 }
-                else if (metaName.Contains("fxmanifest") || metaName.Contains("__resource"))
+                else if (metaName.Contains("fxmanifest"))
                 {
                     using (StreamWriter sw = File.CreateText(metaPath))
                     {
@@ -138,66 +135,80 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                 {
                     if (!subdirectory.Contains("merged"))
                     {
+                        //MessageBox.Show(subdirectory);
+                        string FolderName = Path.GetFileName(subdirectory);
+                        Directory.CreateDirectory(bunifuCustomLabel1.Text + "/merged/data/"+FolderName);
                         i = i + 1;
-                        Console.WriteLine((i / length).ToString());
                         backgroundWorker1.ReportProgress((int)((i / length) * 100));
-                        Console.WriteLine(subdirectory);
-                        //LoadSubDir(subdirectory);
                         if (bunifuCustomLabel5.InvokeRequired)
                         {
                             bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "Loading " + subdirectory));
                         }
-                        //bunifuCustomLabel5.Text = "Loading " + subdirectory;
-                        //Console.WriteLine("Loading " + subdirectory);
-                        //bunifuCustomLabel5.Refresh();
                         DirectoryInfo d = new DirectoryInfo(subdirectory);
                         FileInfo[] Files = d.GetFiles("*.meta");
-                        foreach (FileInfo file in Files)
+                        try
                         {
-                            if (file.Name == "vehicles.meta" )
+                            foreach (FileInfo file in Files)
                             {
-                                XmlDocument vehicles = new XmlDocument();
-                                vehicles.Load(file.FullName);
-                                vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
+                                //if (file.Name == "vehicles.meta")
+                                //{
+                                //    XmlDocument vehicles = new XmlDocument();
+                                //    vehicles.Load(file.FullName);
+                                //    vehicleName = vehicleName + "|" + VehiclesMeta.Merge(vehicles, bunifuCustomLabel1.Text + "/merged/vehicles.meta", bunifuCustomLabel1.Text + "/merged/vehiclename.txt");
+                                //}
+                                //if (file.Name == "carcols.meta")
+                                //{
+                                //    XmlDocument carcols = new XmlDocument();
+                                //    carcols.Load(file.FullName);
+                                //    CarcolsMeta.Merge(carcols, bunifuCustomLabel1.Text + "/merged/carcols.meta");
+                                //}
+                                //if (file.Name == "handling.meta")
+                                //{
+                                //    XmlDocument handling = new XmlDocument();
+                                //    handling.Load(file.FullName);
+                                //    HandlingMeta.Merge(handling, bunifuCustomLabel1.Text + "/merged/handling.meta");
+                                //}
+                                //if (file.Name == "carvariations.meta")
+                                //{
+                                //    XmlDocument carvariations = new XmlDocument();
+                                //    carvariations.Load(file.FullName);
+                                //    CarvariationsMeta.Merge(carvariations, bunifuCustomLabel1.Text + "/merged/carvariations.meta");
+                                //}
+                                //if (file.Name == "vehiclelayouts.meta")
+                                //{
+                                //    XmlDocument vehiclelayouts = new XmlDocument();
+                                //    vehiclelayouts.Load(file.FullName);
+                                //    VehiclelayoutsMeta.Merge(vehiclelayouts, bunifuCustomLabel1.Text + "/merged/vehiclelayouts.meta");
+                                //}
+                                File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/data/" + FolderName, Path.GetFileName(file.FullName)));
                             }
-                            if (file.Name == "carcols.meta" )
+                            if (Directory.Exists(subdirectory + "/stream"))
                             {
-                                XmlDocument carcols = new XmlDocument();
-                                carcols.Load(file.FullName);
-                                CarcolsMeta.Merge(carcols, bunifuCustomLabel1.Text + "/merged/carcols.meta");
-                            }
-                            if (file.Name == "handling.meta")
-                            {
-                                XmlDocument handling = new XmlDocument();
-                                handling.Load(file.FullName);
-                                HandlingMeta.Merge(handling, bunifuCustomLabel1.Text + "/merged/handling.meta");
-                            }
-                            if (file.Name == "carvariations.meta")
-                            {
-                                XmlDocument carvariations = new XmlDocument();
-                                carvariations.Load(file.FullName);
-                                CarvariationsMeta.Merge(carvariations, bunifuCustomLabel1.Text + "/merged/carvariations.meta");
-                            }
-                            if (file.Name == "vehiclelayouts.meta")
-                            {
-                                XmlDocument vehiclelayouts = new XmlDocument();
-                                vehiclelayouts.Load(file.FullName);
-                                VehiclelayoutsMeta.Merge(vehiclelayouts, bunifuCustomLabel1.Text + "/merged/vehiclelayouts.meta");
-                            }
-                        }
-                        if (Directory.Exists(subdirectory + "/stream"))
-                        {
-                            DirectoryInfo stream = new DirectoryInfo(subdirectory + "/stream");
-                            FileInfo[] StreamFile = stream.GetFiles();
-                            foreach (FileInfo file in StreamFile)
-                            {
-                                if (!File.Exists(bunifuCustomLabel1.Text + "/merged/stream/" + file.Name))
+                                DirectoryInfo stream = new DirectoryInfo(subdirectory + "/stream");
+                                FileInfo[] StreamFile = stream.GetFiles();
+                                foreach (FileInfo file in StreamFile)
                                 {
-                                    File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/stream", Path.GetFileName(file.FullName)));
+                                    if (!File.Exists(bunifuCustomLabel1.Text + "/merged/stream/" + file.Name))
+                                    {
+                                        File.Copy(file.FullName, Path.Combine(bunifuCustomLabel1.Text + "/merged/stream", Path.GetFileName(file.FullName)));
+                                    }
                                 }
                             }
                         }
-                        Console.WriteLine("222222222");
+                        catch (Exception ex)
+                        {
+                            try
+                            {
+                                string errFolderName = Path.GetFileName(subdirectory);
+                                Console.WriteLine("asdasd" + errFolderName);
+                                Directory.Move(subdirectory, bunifuCustomLabel1.Text + "/Error/" + errFolderName);
+                            }
+                            catch (Exception exd)
+                            {
+                                MessageBox.Show(exd.Message);
+                            }
+                            MessageBox.Show(ex.Message + "\n" + "Moved " + subdirectory + " to " + bunifuCustomLabel1.Text + "/Error", "ERROR in " + subdirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     Thread.Sleep(500);
                 }
@@ -206,16 +217,15 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
                     sw.WriteLine(vehicleName);
                 }
                 backgroundWorker1.ReportProgress(100);
-                //Console.WriteLine("end");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                
-                if (bunifuCustomLabel5.InvokeRequired)
-                {
-                    bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "ERROR " + bunifuCustomLabel5.Text +" | Check your meta"));
-                }
+            MessageBox.Show(ex.Message);
+
+            if (bunifuCustomLabel5.InvokeRequired)
+            {
+                bunifuCustomLabel5.Invoke((Action)(() => bunifuCustomLabel5.Text = "ERROR " + bunifuCustomLabel5.Text +" | Check your meta"));
+            }
             }
         }
 
@@ -224,7 +234,6 @@ data_file 'VEHICLE_LAYOUTS_FILE' 'vehiclelayouts.meta'";
             //throw new NotImplementedException();
             if (!backgroundWorker1.CancellationPending)
             {
-                Console.WriteLine(e.ProgressPercentage.ToString());
                 guna2CircleProgressBar1.Value = e.ProgressPercentage;
             }
         }

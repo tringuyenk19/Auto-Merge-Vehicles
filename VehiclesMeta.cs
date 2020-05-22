@@ -56,7 +56,7 @@ namespace MergeForm
             XmlNode txdRelationships = vehicles.SelectSingleNode("/CVehicleModelInfo__InitDataList/txdRelationships");
             if (txdRelationships == null)
             {
-                MessageBox.Show("Cant Find txdRelationships");
+                MessageBox.Show("Cant Find txdRelationships in " +vehicleName, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return "txdRelationships ERROR "+ metaPath;
             }
             XmlNode RoottxdRelationships = Root.SelectSingleNode("/CVehicleModelInfo__InitDataList/txdRelationships");
